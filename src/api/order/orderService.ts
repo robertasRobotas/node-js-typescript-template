@@ -1,12 +1,7 @@
-import { StatusCodes } from 'http-status-codes';
-
 import { OrderRepository } from './orderRepository';
-import { ServiceResponse } from '@/common/models/serviceResponse';
 import { logger } from '@/server';
 import { CreateOrder, Order } from './orderTypes';
 import { v4 as uuidv4 } from 'uuid';
-import { onProviderOfferSent, onRequestCreate } from '../websocket/websocket';
-import { response } from 'express';
 
 export class OrderService {
   private repository: OrderRepository;
@@ -31,7 +26,6 @@ export class OrderService {
         },
       };
       const newOrder = await this.repository.create(order);
-      onRequestCreate(newOrder.id);
       return newOrder;
     } catch (error) {
       const errorMessage = `Error creating order: ${(error as Error).message}`;
@@ -42,8 +36,6 @@ export class OrderService {
 
   async addPendingProvider(orderId: string, providerId: string): Promise<void> {
     const order = await this.repository.addPendingProvider(orderId, providerId);
-    onProviderOfferSent(orderId);
-
     return order;
   }
 

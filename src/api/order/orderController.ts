@@ -5,11 +5,12 @@ class OrderController {
   public create: RequestHandler = async (req: Request, res: Response) => {
     try {
       const orderData = req.body;
+
       // TODO: check if oder already exists
       const serviceResponse = await orderService.create(orderData);
       return res.status(201).json(serviceResponse);
     } catch (error) {
-      res.status(400).json({ error: getErrorMessage(error) });
+      return res.status(400).json({ error: getErrorMessage(error) });
     }
   };
 
